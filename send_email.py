@@ -8,7 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 sender = 'gilymerkado@gmail.com'
-gmail_pwd = 'cdUdji9fgoogle'
+gmail_pwd = ''
 
 receivers = 'gilymerkado@yahoo.com'
 

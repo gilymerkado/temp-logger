@@ -14,6 +14,7 @@ import serial
 from datetime import datetime
 import csv
 
+	
 class GraphWindow():
 	def __init__(self):
 		
@@ -111,19 +112,19 @@ class GraphWindow():
 			return True
 		
 class Signals():
-	def on_window1_destroy(self, widget):
+	def on_quit_menu_activate(self, widget):
 		Gtk.main_quit()
 		
 	def addrow(self, widget):
-		points.liststore.append()
-		points.plotpoints()
+		self.points.liststore.append()
+		self.points.plotpoints()
 	
 	def removerow(self, widget):
-		self.select = points.treeview.get_selection()
+		self.select = self.points.treeview.get_selection()
 		self.model, self.treeiter = self.select.get_selected()
 		if self.treeiter is not None:
-			points.liststore.remove(self.treeiter)
-		points.plotpoints()
+			self.points.liststore.remove(self.treeiter)
+		self.points.plotpoints()
 	
 	def startListen(self, widget):
 		points.listenning = True
@@ -132,25 +133,31 @@ class Signals():
 		
 	def stopListen(self, widget):
 		points.listenning = False
+	
+	def on_menu_new_activate(self, widget):
+		self.new_win_builder = Gtk.Builder()
+		self.new_win_builder.add_objects_from_file('templogger.glade', ('window1', 'mainwindow'))
+		self.new_win_builder.connect_signals(Signals())
+		self.points = GraphWindow()
+		self.myfirstwindow = self.new_win_builder.get_object('window1')
+		self.sw1 = self.new_win_builder.get_object('scrolledwindow1')
+		self.sw2 = self.new_win_builder.get_object('scrolledwindow2')
+		statbar = self.new_win_builder.get_object('toolbar2')
+		self.sw1.add_with_viewport(self.points.canvas)
+		self.sw2.add_with_viewport(self.points.treeview)
+
+		self.points.resetplot()
+		self.points.plotpoints()
 		
-		
-points = GraphWindow()
+		self.myfirstwindow.show_all()
+
 
 builder = Gtk.Builder()
-builder.add_objects_from_file('templogger.glade', ('window1', ''))
+builder.add_objects_from_file('templogger.glade', ('window1', 'mainwindow'))
 builder.connect_signals(Signals())
 
-myfirstwindow = builder.get_object('window1')
-sw1 = builder.get_object('scrolledwindow1')
-sw2 = builder.get_object('scrolledwindow2')
-statbar = builder.get_object('toolbar2')
+mainwindow = builder.get_object('mainwindow')
+mainwindow.show_all()
 
-
-sw1.add_with_viewport(points.canvas)
-sw2.add_with_viewport(points.treeview)
-
-points.resetplot()
-points.plotpoints()
-
-myfirstwindow.show_all()
+#myfirstwindow.show_all()
 Gtk.main()
