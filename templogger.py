@@ -114,7 +114,7 @@ class GraphWindow():
 class Signals():
 	def on_quit_menu_activate(self, widget):
 		Gtk.main_quit()
-		
+	######################### Should be removed ########################	
 	def addrow(self, widget):
 		self.points.liststore.append()
 		self.points.plotpoints()
@@ -123,20 +123,22 @@ class Signals():
 		self.select = self.points.treeview.get_selection()
 		self.model, self.treeiter = self.select.get_selected()
 		if self.treeiter is not None:
-			self.points.liststore.remove(self.treeiter)
+			widget.points.liststore.remove(self.treeiter)
 		self.points.plotpoints()
+		
 	
 	def startListen(self, widget):
-		points.listenning = True
+		self.points.listenning = True
 		GObject.timeout_add(2000, points.recordLine)
 		GObject.timeout_add(2000, points.updateFile)
 		
 	def stopListen(self, widget):
 		points.listenning = False
+	####################################################################
 	
 	def on_menu_new_activate(self, widget):
 		self.new_win_builder = Gtk.Builder()
-		self.new_win_builder.add_objects_from_file('templogger.glade', ('window1', 'mainwindow'))
+		self.new_win_builder.add_objects_from_file('templogger.glade', ('window1', 'mainwindow', 'adjustment1'))
 		self.new_win_builder.connect_signals(Signals())
 		self.points = GraphWindow()
 		self.myfirstwindow = self.new_win_builder.get_object('window1')
@@ -149,11 +151,14 @@ class Signals():
 		self.points.resetplot()
 		self.points.plotpoints()
 		
+		self.points.listenning = True
+		GObject.timeout_add(2000, self.points.recordLine)
+		GObject.timeout_add(2000, self.points.updateFile)
 		self.myfirstwindow.show_all()
 
 
 builder = Gtk.Builder()
-builder.add_objects_from_file('templogger.glade', ('window1', 'mainwindow'))
+builder.add_objects_from_file('templogger.glade', ('window1', 'mainwindow', 'adjustment1'))
 builder.connect_signals(Signals())
 
 mainwindow = builder.get_object('mainwindow')
