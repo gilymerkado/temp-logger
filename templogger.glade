@@ -14,6 +14,7 @@
     <property name="default_width">800</property>
     <property name="default_height">500</property>
     <property name="icon">Thermometer_0.svg</property>
+    <signal name="destroy" handler="on_window1_destroy" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
@@ -325,7 +326,6 @@
             <property name="label" translatable="yes">Temperature Logger
 
 This is a temperatuer logger capable of watching up to 5 temperature sensors.
-Use the 'File' menu to add new logger windows.
 
 Created by: Gily Merkado
 	gilymerkado@gmail.com</property>
@@ -337,8 +337,21 @@ Created by: Gily Merkado
             <property name="position">1</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkButton" id="start_record_button">
+            <property name="label" translatable="yes">Start Record</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="start_record_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>
-  <object class="GtkTextBuffer" id="textbuffer3"/>
 </interface>

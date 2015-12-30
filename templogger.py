@@ -15,15 +15,20 @@ from datetime import datetime
 import csv
 
 	
-class GraphWindow():
-	def __init__(self):
+class GraphWindow:
+	def __init__(self, log_no):
 		
 		try:
 			self.ser = serial.Serial('/dev/ttyUSB0', 9600)
 		except OSError:
 			print('Could not find a serial device.')
-			
+		
+		# Log number
+		self.log_no = log_no
+		print('Starting log ', log_no)
+		
 		self.fig = Figure(figsize=(10, 10), dpi=80)
+		self.fig.suptitle('Log ' + str(self.log_no))
 		self.ax = self.fig.add_subplot(111)
 		self.canvas = FigureCanvas(self.fig)
 		
@@ -49,7 +54,7 @@ class GraphWindow():
 		
 		self.listenning = True
 		
-		self.log_file = 'temp_data.csv'
+		self.log_file = 'temp_data' + str(self.log_no) + '.csv'
 		self.file_location = './'
 		self.log = [None, None]
 		
@@ -76,13 +81,13 @@ class GraphWindow():
 		self.fig.autofmt_xdate()
 		self.fig.canvas.draw()
 	
-	def record(self):
-		#temp_read = self.listener.recordLine()
-		self.listener.listenning = True
-		temp_read = self.listener.temp_read
-		print('record: ' + str(temp_read))
-		self.liststore.append(temp_read)
-		self.plotpoints()
+	#def record(self):
+		##temp_read = self.listener.recordLine()
+		#self.listener.listenning = True
+		#temp_read = self.listener.temp_read
+		#print('Log ' + str(self.log_no) + 'record: ' + str(temp_read))
+		#self.liststore.append(temp_read)
+		#self.plotpoints()
 	
 	def recordLine(self):
 		'''Listen to temperature data from the serial port, save to a 
@@ -92,11 +97,13 @@ class GraphWindow():
 		if self.listenning == True:
 			self.datetime_stamp = '%4d-%02d-%02dT%02d-%02d-%02d' % (localtime()[:6])
 			try:
-				date_num = date2num(datetime.now())
-				self.log = [str(datetime.now()), float(self.ser.readline())]
-				#self.temp_read = self.log
-				self.liststore.append(self.log)
-				self.plotpoints()
+				# Record temp from the defined log number
+				if self.ser.readline().split(', ')[0] == log_no:
+					date_num = date2num(datetime.now())
+					self.log = [str(datetime.now()), float(self.ser.readline())]
+					#self.temp_read = self.log
+					self.liststore.append(self.log)
+					self.plotpoints()
 			except:
 				print('Could not read serial device')
 				self.temp_read = None
@@ -114,6 +121,17 @@ class GraphWindow():
 class Signals():
 	def on_quit_menu_activate(self, widget):
 		Gtk.main_quit()
+	
+	def on_window1_destroy(self, widget):
+		Gtk.main_quit()
+		
+	def start_record_button_clicked(self, widget):
+		self.on_menu_new_activate(self, 1)
+		self.on_menu_new_activate(self, 2)
+		self.on_menu_new_activate(self, 3)
+		self.on_menu_new_activate(self, 4)
+		self.on_menu_new_activate(self, 5)
+		
 	######################### Should be removed ########################	
 	def addrow(self, widget):
 		self.points.liststore.append()
@@ -136,11 +154,11 @@ class Signals():
 		points.listenning = False
 	####################################################################
 	
-	def on_menu_new_activate(self, widget):
+	def on_menu_new_activate(self, widget, log_no):
 		self.new_win_builder = Gtk.Builder()
 		self.new_win_builder.add_objects_from_file('templogger.glade', ('window1', 'mainwindow', 'adjustment1'))
 		self.new_win_builder.connect_signals(Signals())
-		self.points = GraphWindow()
+		self.points = GraphWindow(log_no)
 		self.myfirstwindow = self.new_win_builder.get_object('window1')
 		self.sw1 = self.new_win_builder.get_object('scrolledwindow1')
 		self.sw2 = self.new_win_builder.get_object('scrolledwindow2')
