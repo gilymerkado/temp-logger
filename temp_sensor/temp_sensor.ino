@@ -22,26 +22,26 @@ void setup()
 void loop()
 {
   float temperature1 = getTemp(ds1);
-//  Serial.print("1 ");
+  Serial.print("1 ");
   Serial.println(temperature1);
   
-//  float temperature2 = getTemp(ds2);
-//  Serial.print("2 ");
-//  Serial.println(temperature2);
-//  
-//  float temperature3 = getTemp(ds3);
-//  Serial.print("3 ");
-//  Serial.println(temperature3);
-//  
-//  float temperature4 = getTemp(ds4);
-//  Serial.print("4 ");
-//  Serial.println(temperature4);
-//  
-//  float temperature5 = getTemp(ds5);
-//  
-//  Serial.print("5 ");
-//  Serial.println(temperature5);
-  delay(1000); // repeat once per second
+  float temperature2 = getTemp(ds2);
+  Serial.print("2 ");
+  Serial.println(temperature2);
+  
+  float temperature3 = getTemp(ds3);
+  Serial.print("3 ");
+  Serial.println(temperature3);
+  
+  float temperature4 = getTemp(ds4);
+  Serial.print("4 ");
+  Serial.println(temperature4);
+  
+  float temperature5 = getTemp(ds5);
+  
+  Serial.print("5 ");
+  Serial.println(temperature5);
+  delay(1000); // repeat in miliseconds
 }
 
 float getTemp(OneWire pin) {

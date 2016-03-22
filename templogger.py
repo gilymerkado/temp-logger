@@ -14,6 +14,7 @@ import serial
 from datetime import datetime
 import csv
 
+from send_email import sendEmailAlert
 	
 class GraphWindow:
 	def __init__(self, log_no):
@@ -96,17 +97,26 @@ class GraphWindow:
 		try:
 			n = 0
 			while n < 5:
-				print(self.ser.readline())
 				# Record temp from the defined log number
-				if int(self.ser.readline().split(' ')[0]) == self.log_no:
+				row = self.ser.readline()
+				logger = row.split(' ')[0]
+				temp = row.split(' ')[1]
+				if int(logger) == self.log_no:
+					print('row ', str(self.log_no), row)
 					date_num = date2num(datetime.now())
-					self.log = [str(datetime.now()), float(self.ser.readline().split(' ')[1])]
+					self.log = [str(datetime.now()), float(temp)]
 					#self.temp_read = self.log
 					self.liststore.append(self.log)
 					self.plotpoints()
+					# Send email alert
+					if temp > 5:
+						sendEmailAlert(self.log_no, temp)
+				row = None
+				temp = None
+				n += 1
 				while Gtk.events_pending():
 					Gtk.main_iteration()  # runs the GTK main loop as needed
-				n += 1
+				
 		except:
 			print('Could not read serial device')
 			self.temp_read = None
@@ -150,8 +160,8 @@ class Signals():
 	
 	def startListen(self, widget):
 		self.points.listenning = True
-		GObject.timeout_add(2000, points.recordLine)
-		GObject.timeout_add(2000, points.updateFile)
+		GObject.timeout_add(1000, points.recordLine)
+		GObject.timeout_add(1000, points.updateFile)
 		
 	def stopListen(self, widget):
 		points.listenning = False
