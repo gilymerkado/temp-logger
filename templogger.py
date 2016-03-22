@@ -17,7 +17,6 @@ import csv
 	
 class GraphWindow:
 	def __init__(self, log_no):
-		
 		try:
 			self.ser = serial.Serial('/dev/ttyUSB0', 9600)
 		except OSError:
@@ -94,20 +93,24 @@ class GraphWindow:
 		log file (csv) and return as a list:
 		return log = [datetime_stamp, temperature]
 		'''
-		if self.listenning == True:
-			self.datetime_stamp = '%4d-%02d-%02dT%02d-%02d-%02d' % (localtime()[:6])
-			try:
+		try:
+			n = 0
+			while n < 5:
+				print(self.ser.readline())
 				# Record temp from the defined log number
-				if self.ser.readline().split(', ')[0] == log_no:
+				if int(self.ser.readline().split(' ')[0]) == self.log_no:
 					date_num = date2num(datetime.now())
-					self.log = [str(datetime.now()), float(self.ser.readline())]
+					self.log = [str(datetime.now()), float(self.ser.readline().split(' ')[1])]
 					#self.temp_read = self.log
 					self.liststore.append(self.log)
 					self.plotpoints()
-			except:
-				print('Could not read serial device')
-				self.temp_read = None
-			return True
+				while Gtk.events_pending():
+					Gtk.main_iteration()  # runs the GTK main loop as needed
+				n += 1
+		except:
+			print('Could not read serial device')
+			self.temp_read = None
+		return True
 	
 	def updateFile(self):
 		'''Add a new row to the log file'''
