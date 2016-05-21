@@ -80,14 +80,6 @@ class GraphWindow:
 		self.fig.autofmt_xdate()
 		self.fig.canvas.draw()
 	
-	#def record(self):
-		##temp_read = self.listener.recordLine()
-		#self.listener.listenning = True
-		#temp_read = self.listener.temp_read
-		#print('Log ' + str(self.log_no) + 'record: ' + str(temp_read))
-		#self.liststore.append(temp_read)
-		#self.plotpoints()
-	
 	def recordLine(self):
 		'''Listen to temperature data from the serial port, save to a 
 		log file (csv) and return as a list:
