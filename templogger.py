@@ -75,7 +75,6 @@ class GraphWindow:
 	def plotpoints(self):
 		self.resetplot()
 		for row in self.liststore:
-			#self.ax.scatter(row[0], row[1], marker='o', s=50)
 			self.ax.plot_date(datetime.strptime(row[0][0:19], '%Y-%m-%d %H:%M:%S'), 
 			row[1], 'bo')
 		self.fig.autofmt_xdate()
@@ -173,5 +172,4 @@ builder.connect_signals(Signals())
 mainwindow = builder.get_object('mainwindow')
 mainwindow.show_all()
 
-#myfirstwindow.show_all()
 Gtk.main()
