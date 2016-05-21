@@ -144,28 +144,6 @@ class Signals():
 		self.on_menu_new_activate(self, 3)
 		self.on_menu_new_activate(self, 4)
 		self.on_menu_new_activate(self, 5)
-		
-	######################### Should be removed ########################	
-	def addrow(self, widget):
-		self.points.liststore.append()
-		self.points.plotpoints()
-	
-	def removerow(self, widget):
-		self.select = self.points.treeview.get_selection()
-		self.model, self.treeiter = self.select.get_selected()
-		if self.treeiter is not None:
-			widget.points.liststore.remove(self.treeiter)
-		self.points.plotpoints()
-		
-	
-	def startListen(self, widget):
-		self.points.listenning = True
-		GObject.timeout_add(1000, points.recordLine)
-		GObject.timeout_add(1000, points.updateFile)
-		
-	def stopListen(self, widget):
-		points.listenning = False
-	####################################################################
 	
 	def on_menu_new_activate(self, widget, log_no):
 		self.new_win_builder = Gtk.Builder()
